@@ -32,3 +32,5 @@ dummy.txt
 !**/packages/build/
 # Uncomment if necessary however generally it will be regenerated when needed
 #!**/packages/repositories.config
+DemoSite1/Umbraco/
+DemoSite1/Umbraco_Client/

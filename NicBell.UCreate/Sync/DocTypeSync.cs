@@ -49,16 +49,34 @@ namespace NicBell.UCreate.Sync
 
             ct.Name = attr.Name;
             ct.Alias = itemType.Name;
+            //TODO: tuje ct.Alias = attr.Alias;
             ct.Icon = attr.Icon;
             ct.AllowedAsRoot = attr.AllowedAsRoot;
             ct.IsContainer = attr.IsContainer;
             ct.ParentId = -1;
 
-            SetParent(ct, itemType);
+            // Umbraco 7.4 doesn't support DocumentType inheritance anymore\
+            // see: https://our.umbraco.org/forum/core/general/73809-no-more-master-doctypes-in-74-beta-is-this-really-an-improvement
+            //SetParent(ct, itemType);
+            SetParentByFolder(ct, attr.Folder);
+
+            
             MapProperties(ct, itemType);
             SetTemplates(ct, itemType, attr.AllowedTemplates, attr.DefaultTemplate);
 
             Save(ct);
+        }
+
+        private void SetParentByFolder(IContentType ct, Type parentType)
+        {
+            if (parentType == null)
+            {
+                return;
+            }
+
+            var containerAttr = parentType.GetCustomAttribute<DocTypeContainerAttribute>();
+            var parent = new DocTypeContainerSync().GetContainer(containerAttr);
+            ct.ParentId = parent.Id;
         }
 
 

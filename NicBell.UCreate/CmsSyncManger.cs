@@ -39,6 +39,7 @@ namespace NicBell.UCreate
         {
             var dataSync = new DataTypeSync();
             var mediaSync = new MediaTypeSync();
+            var docContainerSync = new DocTypeContainerSync();
             var docSync = new DocTypeSync();
             var memberSync = new MemberTypeSync();
             var memberGroupSync = new MemberGroupSync();
@@ -46,6 +47,7 @@ namespace NicBell.UCreate
             //Sync all the types
             dataSync.SyncAll();
             mediaSync.SyncAll();
+            docContainerSync.SyncAll();
             docSync.SyncAll();
             memberSync.SyncAll();
             memberGroupSync.SyncAll();

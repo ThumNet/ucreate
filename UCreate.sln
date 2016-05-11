@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Meta", "Meta", "{1547C068-F354-43CB-A0A1-BC43659CA20F}"
 	ProjectSection(SolutionItems) = preProject
@@ -14,6 +14,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NicBell.UCreate", "NicBell.UCreate\NicBell.UCreate.csproj", "{A10C453F-B86B-4275-A5DD-0EB2B42DC4A1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NicBell.UCreate.Test", "NicBell.UCreate.Test\NicBell.UCreate.Test.csproj", "{2A17F82B-C822-4CA9-830A-1B9FEB9BF641}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoSite1", "DemoSite1\DemoSite1.csproj", "{35CC302E-79EC-4D11-989A-70377572D42F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +31,10 @@ Global
 		{2A17F82B-C822-4CA9-830A-1B9FEB9BF641}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A17F82B-C822-4CA9-830A-1B9FEB9BF641}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A17F82B-C822-4CA9-830A-1B9FEB9BF641}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35CC302E-79EC-4D11-989A-70377572D42F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35CC302E-79EC-4D11-989A-70377572D42F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35CC302E-79EC-4D11-989A-70377572D42F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35CC302E-79EC-4D11-989A-70377572D42F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
