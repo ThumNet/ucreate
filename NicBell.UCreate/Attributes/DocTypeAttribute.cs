@@ -28,5 +28,11 @@ namespace NicBell.UCreate.Attributes
         /// The parent folder
         /// </summary>
         public Type Folder { get; set; }
+
+        /// <summary>
+        /// The path for the document type (visual in the backoffice), DocumentTypeContainers are created. 
+        /// For nesting use '/' for example: Sites/Pages
+        /// </summary>
+        public string Path { get; set; }
     }
 }

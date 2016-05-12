@@ -52,23 +52,50 @@ namespace NicBell.UCreate.Sync
             return attempt2.Result.Entity.Id;
         }
 
-        private IEnumerable<EntityContainer> GetContainers(T attr)
+        public int CreateContainers(string[] parents)
+        {
+            var existing = GetContainers(Umbraco.Core.Constants.ObjectTypes.DocumentTypeContainerGuid, Umbraco.Core.Constants.ObjectTypes.DocumentTypeGuid);
+            var parentId = -1;
+            for (int i=0; i<parents.Length; i++)
+            {
+                var container = existing.FirstOrDefault(e => e.ParentId == parentId && e.Name == parents[i] && e.Level == i+1);
+                if (container == null)
+                {
+                    var attempt = Service.CreateContentTypeContainer(parentId, parents[i]);
+                    parentId = attempt.Result.Entity.Id;                    
+                }
+                else
+                {
+                    parentId = container.Id;
+                }
+            }
+            return parentId;
+        }
+
+        private IEnumerable<EntityContainer> GetContainers(Guid containerObjectType, Guid objectType)
         {
             // current service doesnt yet support getting all ContentTypeContainers thus created a workaround
             // _service.GetContentTypeContainers(new[] { RootId });
             var uowProvider = new PetaPocoUnitOfWorkProvider(LoggerResolver.Current.Logger);
             var uow = uowProvider.GetUnitOfWork();
-            var sql = new Sql("SELECT * FROM umbracoNode WHERE nodeObjectType = @0", attr.ContainerObjectType);
+            var sql = new Sql("SELECT * FROM umbracoNode WHERE nodeObjectType = @0", containerObjectType);
 
             foreach (var dto in uow.Database.Fetch<EntityDto>(sql))
             {
-                yield return MapEntityDto(attr.ObjectType, dto);
+                yield return MapEntityDto(objectType, dto);
             }
         }
+
+        private IEnumerable<EntityContainer> GetContainers(T attr)
+        {
+            return GetContainers(attr.ContainerObjectType, attr.ObjectType);
+        }
+
         internal EntityContainer GetContainer(T attr)
         {
             // current service doesnt yet support getting all ContentTypeContainers thus created a workaround
-            // _service.GetContentTypeContainers(new[] { RootId });
+            // _service.GetContentTypeContainers(new[] { RootId });           
+
             var uowProvider = new PetaPocoUnitOfWorkProvider(LoggerResolver.Current.Logger);
             var uow = uowProvider.GetUnitOfWork();
             var sql = new Sql("SELECT * FROM umbracoNode WHERE nodeObjectType = @0 AND text = @1", attr.ContainerObjectType, attr.Name);

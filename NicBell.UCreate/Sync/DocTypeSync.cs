@@ -58,8 +58,8 @@ namespace NicBell.UCreate.Sync
             // Umbraco 7.4 doesn't support DocumentType inheritance anymore\
             // see: https://our.umbraco.org/forum/core/general/73809-no-more-master-doctypes-in-74-beta-is-this-really-an-improvement
             //SetParent(ct, itemType);
-            SetParentByFolder(ct, attr.Folder);
-
+            //SetParent(ct, attr.Folder);
+            SetParent(ct, attr.Path);
             
             MapProperties(ct, itemType);
             SetTemplates(ct, itemType, attr.AllowedTemplates, attr.DefaultTemplate);
@@ -67,7 +67,18 @@ namespace NicBell.UCreate.Sync
             Save(ct);
         }
 
-        private void SetParentByFolder(IContentType ct, Type parentType)
+        private void SetParent(IContentType ct, string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return;
+            }
+
+            var parents = path.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+            ct.ParentId = new DocTypeContainerSync().CreateContainers(parents);
+        }
+
+        private void SetParent(IContentType ct, Type parentType)
         {
             if (parentType == null)
             {
