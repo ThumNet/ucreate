@@ -1,5 +1,4 @@
-﻿using NicBell.UCreate.Attributes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Core;
@@ -11,7 +10,7 @@ using Umbraco.Core.Services;
 
 namespace NicBell.UCreate.Sync
 {
-    public class BaseContainerSync<T> : BaseTypeSync<T> where T : BaseContainerAttribute
+    public class ContainerSync
     {
         private const int RootId = -1;
 
@@ -21,35 +20,6 @@ namespace NicBell.UCreate.Sync
             {
                 return ApplicationContext.Current.Services.ContentTypeService;
             }
-        }
-
-        public override void Save(Type itemType)
-        {
-            var attr = itemType.GetCustomAttribute<T>(false);
-
-            Create(attr);
-        }
-
-        private int Create(T attr)
-        {
-            var containers = GetContainers(attr);
-
-            var existingContainer = containers.SingleOrDefault(c => c.Name == attr.Name);
-            if (existingContainer != null)
-            {
-                return existingContainer.Id;
-            }
-
-            if (attr.Parent == null)
-            {
-                var attempt1 = Service.CreateContentTypeContainer(RootId, attr.Name);
-                return attempt1.Result.Entity.Id;
-            }
-
-            var parentAttr = attr.Parent.GetCustomAttribute<T>(false);
-            var parentId = Create(parentAttr);
-            var attempt2 = Service.CreateContentTypeContainer(parentId, attr.Name);
-            return attempt2.Result.Entity.Id;
         }
 
         public int CreateContainers(string[] parents)
@@ -86,23 +56,17 @@ namespace NicBell.UCreate.Sync
             }
         }
 
-        private IEnumerable<EntityContainer> GetContainers(T attr)
-        {
-            return GetContainers(attr.ContainerObjectType, attr.ObjectType);
-        }
-
-        internal EntityContainer GetContainer(T attr)
+        internal EntityContainer GetContainer(Guid containerObjectType, Guid objectType, string name)
         {
             // current service doesnt yet support getting all ContentTypeContainers thus created a workaround
             // _service.GetContentTypeContainers(new[] { RootId });           
 
             var uowProvider = new PetaPocoUnitOfWorkProvider(LoggerResolver.Current.Logger);
             var uow = uowProvider.GetUnitOfWork();
-            var sql = new Sql("SELECT * FROM umbracoNode WHERE nodeObjectType = @0 AND text = @1", attr.ContainerObjectType, attr.Name);
+            var sql = new Sql("SELECT * FROM umbracoNode WHERE nodeObjectType = @0 AND text = @1", containerObjectType, name);
             var dto = uow.Database.FirstOrDefault<EntityDto>(sql);
-            return MapEntityDto(attr.ObjectType, dto);
+            return MapEntityDto(objectType, dto);
         }
-
 
         private EntityContainer MapEntityDto(Guid containedObjectType, EntityDto dto)
         {

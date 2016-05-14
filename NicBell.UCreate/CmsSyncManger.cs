@@ -38,16 +38,16 @@ namespace NicBell.UCreate
         public static void Synchronize()
         {
             var dataSync = new DataTypeSync();
+            var dataWithPrevaluesSync = new DataTypeWithPreValuesSync();
             var mediaSync = new MediaTypeSync();
-            var docContainerSync = new DocTypeContainerSync();
             var docSync = new DocTypeSync();
             var memberSync = new MemberTypeSync();
             var memberGroupSync = new MemberGroupSync();
 
             //Sync all the types
             dataSync.SyncAll();
+            dataWithPrevaluesSync.SyncAll();
             mediaSync.SyncAll();
-            docContainerSync.SyncAll();
             docSync.SyncAll();
             memberSync.SyncAll();
             memberGroupSync.SyncAll();

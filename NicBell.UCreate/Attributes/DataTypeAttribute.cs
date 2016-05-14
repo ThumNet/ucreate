@@ -3,6 +3,7 @@ using Umbraco.Core.Models;
 
 namespace NicBell.UCreate.Attributes
 {
+    // TODO: remove in favor of BaseDataTypeWithPreValuesAttribute
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public class DataTypeAttribute : Attribute 
     {

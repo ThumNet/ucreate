@@ -6,20 +6,18 @@ using System.Collections.Generic;
 using System.Linq;
 using Umbraco.Core;
 using Umbraco.Core.Models;
-using Umbraco.Core.Services;
 
 namespace NicBell.UCreate.Sync
 {
     public abstract class BaseTreeContentTypeSync<T> : BaseContentTypeSync<T> where T : BaseTreeContentTypeAttribute
     {
-        public abstract IContentTypeComposition GetByAlias(string alias);
+        protected abstract IContentTypeComposition GetByAlias(string alias);
 
         /// <summary>
         /// Saves a content type, useful for updating
         /// </summary>
         /// <param name="ct"></param>
-        public abstract void Save(IContentTypeBase ct);
-
+        protected abstract void Save(IContentTypeBase ct);
 
         /// <summary>
         /// Sync all items
@@ -40,13 +38,23 @@ namespace NicBell.UCreate.Sync
             }
         }
 
-
         /// <summary>
-        /// Sync single item
+        /// Sets parent ID for content type inheritance
         /// </summary>
         /// <param name="itemType"></param>
-        /// <param name="syncChildren"></param>
-        public void SyncItem(Type itemType, bool syncChildren = false)
+        /// <param name="ct"></param>
+        protected void SetParent(IContentTypeComposition ct, Type itemType)
+        {
+            var parentAttr = itemType.BaseType.GetCustomAttributes().FirstOrDefault(x => x is BaseContentTypeAttribute) as BaseContentTypeAttribute;
+
+            if (parentAttr != null)
+            {
+                ct.SetLazyParentId(new Lazy<int>(() => GetByAlias(itemType.BaseType.Name).Id));
+                ct.AddContentType(GetByAlias(itemType.BaseType.Name));
+            }
+        }
+
+        private void SyncItem(Type itemType, bool syncChildren = false)
         {
             Save(itemType);
 
@@ -61,27 +69,7 @@ namespace NicBell.UCreate.Sync
             }
         }
 
-
-        /// <summary>
-        /// Saves allowed types
-        /// </summary>
-        /// <param name="itemType"></param>
-        public void SaveAllowedTypes(Type itemType)
-        {
-            var attr = itemType.GetCustomAttribute<T>();
-            var ct = GetByAlias(itemType.Name);
-            MapAllowedTypes(ct, attr.AllowedChildTypes);
-
-            Save(ct);
-        }
-
-
-        /// <summary>
-        /// Maps allowed children
-        /// </summary>
-        /// <param name="ct"></param>
-        /// <param name="allowedTypeAliases"></param>
-        protected void MapAllowedTypes(IContentTypeBase ct, Type[] allowedTypes)
+        private void MapAllowedTypes(IContentTypeBase ct, Type[] allowedTypes)
         {
             if (allowedTypes == null || allowedTypes.Length == 0)
                 return;
@@ -97,12 +85,16 @@ namespace NicBell.UCreate.Sync
             ct.AllowedContentTypes = allowedContentTypes;
         }
 
+        private void SaveAllowedTypes(Type itemType)
+        {
+            var attr = itemType.GetCustomAttribute<T>();
+            var ct = GetByAlias(itemType.Name);
+            MapAllowedTypes(ct, attr.AllowedChildTypes);
 
-        /// <summary>
-        /// Saves content type compositions
-        /// </summary>
-        /// <param name="itemType"></param>
-        public void SaveCompositions(Type itemType)
+            Save(ct);
+        }
+
+        private void SaveCompositions(Type itemType)
         {
             var attr = itemType.GetCustomAttribute<T>();
 
@@ -118,23 +110,6 @@ namespace NicBell.UCreate.Sync
 
 
             Save(ct);
-        }
-
-
-        /// <summary>
-        /// Sets parent ID for content type inheritance
-        /// </summary>
-        /// <param name="itemType"></param>
-        /// <param name="ct"></param>
-        protected void SetParent(IContentTypeComposition ct, Type itemType)
-        {
-            var parentAttr = itemType.BaseType.GetCustomAttributes().FirstOrDefault(x => x is BaseContentTypeAttribute) as BaseContentTypeAttribute;
-
-            if (parentAttr != null)
-            {
-                ct.SetLazyParentId(new Lazy<int>(() => GetByAlias(itemType.BaseType.Name).Id));
-                ct.AddContentType(GetByAlias(itemType.BaseType.Name));
-            }
         }
     }
 }

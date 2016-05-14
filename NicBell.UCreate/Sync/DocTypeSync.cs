@@ -13,10 +13,7 @@ namespace NicBell.UCreate.Sync
 {
     public class DocTypeSync : BaseTreeContentTypeSync<DocTypeAttribute>
     {
-        /// <summary>
-        /// Service
-        /// </summary>
-        public IContentTypeService Service
+        internal IContentTypeService Service
         {
             get
             {
@@ -25,23 +22,22 @@ namespace NicBell.UCreate.Sync
         }
 
 
-        public override IContentTypeComposition GetByAlias(string alias)
+        protected override IContentTypeComposition GetByAlias(string alias)
         {
             return Service.GetContentType(alias);
         }
 
 
-        public override void Save(IContentTypeBase ct)
+        protected override void Save(IContentTypeBase ct)
         {
             Service.Save(ct as IContentType);
         }
-
 
         /// <summary>
         /// Saves
         /// </summary>
         /// <param name="itemType"></param>
-        public override void Save(Type itemType)
+        protected override void Save(Type itemType)
         {
             var contentTypes = Service.GetAllContentTypes();
             var attr = itemType.GetCustomAttribute<DocTypeAttribute>();
@@ -58,7 +54,6 @@ namespace NicBell.UCreate.Sync
             // Umbraco 7.4 doesn't support DocumentType inheritance anymore\
             // see: https://our.umbraco.org/forum/core/general/73809-no-more-master-doctypes-in-74-beta-is-this-really-an-improvement
             //SetParent(ct, itemType);
-            //SetParent(ct, attr.Folder);
             SetParent(ct, attr.Path);
             
             MapProperties(ct, itemType);
@@ -75,21 +70,8 @@ namespace NicBell.UCreate.Sync
             }
 
             var parents = path.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-            ct.ParentId = new DocTypeContainerSync().CreateContainers(parents);
+            ct.ParentId = new ContainerSync().CreateContainers(parents);
         }
-
-        private void SetParent(IContentType ct, Type parentType)
-        {
-            if (parentType == null)
-            {
-                return;
-            }
-
-            var containerAttr = parentType.GetCustomAttribute<DocTypeContainerAttribute>();
-            var parent = new DocTypeContainerSync().GetContainer(containerAttr);
-            ct.ParentId = parent.Id;
-        }
-
 
         /// <summary>
         /// Set templates for doctypes
@@ -118,7 +100,6 @@ namespace NicBell.UCreate.Sync
             ct.AllowedTemplates = templates;
             ct.SetDefaultTemplate(templates.First(x => x.Alias == defaultTemplate));
         }
-
 
         /// <summary>
         /// Creates a template

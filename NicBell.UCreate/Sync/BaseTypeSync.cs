@@ -6,12 +6,12 @@ namespace NicBell.UCreate.Sync
 {
     public abstract class BaseTypeSync<T> where T : Attribute
     {
-        private List<Type> _typesToSync;
+        protected IEnumerable<Type> _typesToSync;
 
         /// <summary>
         /// Types to sync
         /// </summary>
-        public List<Type> TypesToSync
+        protected virtual IEnumerable<Type> TypesToSync
         {
             get
             {
@@ -42,6 +42,6 @@ namespace NicBell.UCreate.Sync
         /// Save an item
         /// </summary>
         /// <param name="itemType"></param>
-        public abstract void Save(Type itemType);
+        protected abstract void Save(Type itemType);
     }
 }

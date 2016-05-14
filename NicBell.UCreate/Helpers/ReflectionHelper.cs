@@ -20,6 +20,19 @@ namespace NicBell.UCreate.Helpers
                 .ToList();
         }
 
+        /// <summary>
+        /// Gets all types that inherit an abstract class
+        /// </summary>
+        /// <param name="classType"></param>
+        /// <returns></returns>
+        public static List<Type> GetTypesOfSubClass<T>() where T : class
+        {
+            return GetDependentAssemblies(Assembly.GetExecutingAssembly())
+                 .SelectMany(x => x.GetTypes())
+                 .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(T)))
+                 .ToList();
+        }
+
 
         /// <summary>
         /// Gets all types with an attribute
@@ -28,9 +41,14 @@ namespace NicBell.UCreate.Helpers
         /// <returns></returns>
         public static List<Type> GetTypesWithAttribute<T>() where T : Attribute
         {
+            return GetTypesWithAttribute(typeof(T));
+        }
+
+        public static List<Type> GetTypesWithAttribute(Type attributeType)
+        {
             return GetDependentAssemblies(Assembly.GetExecutingAssembly())
                  .SelectMany(x => x.GetTypes())
-                 .Where(t => t.IsDefined(typeof(T)))
+                 .Where(t => t.IsDefined(attributeType))
                  .ToList();
         }
 
@@ -55,7 +73,7 @@ namespace NicBell.UCreate.Helpers
         /// <param name="assembly"></param>
         /// <returns></returns>
         public static IEnumerable<Assembly> GetDependentAssemblies(Assembly assembly)
-        {
+        {            
             return AppDomain.CurrentDomain.GetAssemblies()
                 .Where(a => a.ImageRuntimeVersion != "0.0.0.0")
                 .Where(a => a.GetReferencedAssemblies().Select(aRef => aRef.FullName).Contains(assembly.FullName));

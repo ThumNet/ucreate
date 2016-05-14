@@ -278,12 +278,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Attributes\BaseContainerAttribute.cs" />
     <Compile Include="Attributes\BaseContentTypeAttribute.cs" />
+    <Compile Include="Attributes\BaseDataTypeWithPreValuesAttribute.cs" />
     <Compile Include="Attributes\BaseTreeContentTypeAttribute.cs" />
     <Compile Include="Attributes\DataTypeAttribute.cs" />
+    <Compile Include="Attributes\DataTypes\TrueFalseDataTypeAttribute.cs" />
+    <Compile Include="Attributes\DataTypes\RadioButtonListDataTypeAttribute.cs" />
+    <Compile Include="Attributes\DataTypes\DateTimePickerDataTypeAttribute.cs" />
+    <Compile Include="Attributes\DataTypes\DropdownDataTypeAttribute.cs" />
+    <Compile Include="Attributes\DataTypes\CheckBoxListDataTypeAttribute.cs" />
+    <Compile Include="Attributes\DataTypes\ColorPickerDataTypeAttribute.cs" />
     <Compile Include="Attributes\DocTypeAttribute.cs" />
-    <Compile Include="Attributes\DocTypeContainerAttribute.cs" />
     <Compile Include="Attributes\MediaTypeAttribute.cs" />
     <Compile Include="Attributes\MemberGroupAttribute.cs" />
     <Compile Include="Attributes\MemberPropertyAttribute.cs" />
@@ -300,12 +305,12 @@
     <Compile Include="Interfaces\ISyncTask.cs" />
     <Compile Include="Models\BaseDocType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sync\BaseContainerSync.cs" />
+    <Compile Include="Sync\ContainerSync.cs" />
     <Compile Include="Sync\BaseContentTypeSync.cs" />
     <Compile Include="Sync\BaseTreeContentTypeSync.cs" />
     <Compile Include="Sync\BaseTypeSync.cs" />
     <Compile Include="Sync\DataTypeSync.cs" />
-    <Compile Include="Sync\DocTypeContainerSync.cs" />
+    <Compile Include="Sync\DataTypeWithPreValuesSync.cs" />
     <Compile Include="Sync\DocTypeSync.cs" />
     <Compile Include="Sync\MediaTypeSync.cs" />
     <Compile Include="Sync\MemberGroupSync.cs" />

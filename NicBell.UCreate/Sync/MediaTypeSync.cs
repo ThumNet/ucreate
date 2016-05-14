@@ -10,10 +10,7 @@ namespace NicBell.UCreate.Sync
 {
     public class MediaTypeSync : BaseTreeContentTypeSync<MediaTypeAttribute>
     {
-        /// <summary>
-        /// Service
-        /// </summary>
-        public IContentTypeService Service
+        internal IContentTypeService Service
         {
             get
             {
@@ -22,23 +19,18 @@ namespace NicBell.UCreate.Sync
         }
 
 
-        public override IContentTypeComposition GetByAlias(string alias)
+        protected override IContentTypeComposition GetByAlias(string alias)
         {
             return Service.GetMediaType(alias);
         }
 
 
-        public override void Save(IContentTypeBase ct)
+        protected override void Save(IContentTypeBase ct)
         {
             Service.Save(ct as IMediaType);
         }
 
-
-        /// <summary>
-        /// Saves
-        /// </summary>
-        /// <param name="itemType"></param>
-        public override void Save(Type itemType)
+        protected override void Save(Type itemType)
         {
             var mediaTypes = Service.GetAllMediaTypes();
             var attr = itemType.GetCustomAttribute<MediaTypeAttribute>();

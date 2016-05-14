@@ -1,5 +1,5 @@
 ﻿using NicBell.UCreate.Attributes;
-using NicBell.UCreate.Interfaces;
+using NicBell.UCreate.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -9,15 +9,8 @@ using Umbraco.Core.Services;
 
 namespace NicBell.UCreate.Sync
 {
-
-    /// <summary>
-    /// TODO: remove in favor of the DataTypeWithPreValuesSync
-    /// </summary>
-    public class DataTypeSync : BaseTypeSync<DataTypeAttribute>
+    public class DataTypeWithPreValuesSync : BaseTypeSync<BaseDataTypeWithPreValuesAttribute>
     {
-        /// <summary>
-        /// Service
-        /// </summary>
         public IDataTypeService Service
         {
             get
@@ -26,31 +19,38 @@ namespace NicBell.UCreate.Sync
             }
         }
 
+        protected override IEnumerable<Type> TypesToSync
+        {
+            get
+            {
+                //return _typesToSync ?? (_typesToSync = ReflectionHelper.GetTypesOfSubClass<BaseDataTypeWithPreValuesAttribute>());
+                return _typesToSync ?? (_typesToSync = TypeFinder.FindClassesOfType<BaseDataTypeWithPreValuesAttribute>());
+            }
+        }
 
-        /// <summary>
-        /// Saves
-        /// </summary>
-        /// <param name="itemType"></param>
         protected override void Save(Type itemType)
         {
-            var attr = itemType.GetCustomAttribute<DataTypeAttribute>();
-            var instance = Activator.CreateInstance(itemType, null);
-            var dt = Service.GetDataTypeDefinitionById(new Guid(attr.Key)) ?? new DataTypeDefinition(attr.EditorAlias) { Key = new Guid(attr.Key) };
+            // itemType is the Custom attribute that implements BaseDataTypeWithPreValuesAttribute
+            // so get all classes that have the Custom attribute
+            var dataTypes = ReflectionHelper.GetTypesWithAttribute(itemType);
 
+            foreach (var dataType in dataTypes)
+            {
+                SaveDataType(dataType, itemType);
+            }
+        }
+
+        private void SaveDataType(Type dataType, Type attributeType)
+        {
+            var attr = (BaseDataTypeWithPreValuesAttribute)dataType.GetCustomAttribute(attributeType);
+
+            var dt = Service.GetDataTypeDefinitionById(new Guid(attr.Key)) ?? new DataTypeDefinition(attr.EditorAlias) { Key = new Guid(attr.Key) };
             dt.Name = attr.Name;
             dt.DatabaseType = attr.DBType;
             dt.PropertyEditorAlias = attr.EditorAlias;
 
-            if (instance is IHasPreValues)
-            {
-                Service.SaveDataTypeAndPreValues(dt, MergePreValues(dt, ((IHasPreValues) instance).PreValues));
-            }
-            else
-            {
-                Service.Save(dt);
-            }
+            Service.SaveDataTypeAndPreValues(dt, MergePreValues(dt, (attr.PreValues)));
         }
-
 
         private IDictionary<string, PreValue> MergePreValues(IDataTypeDefinition dt, IDictionary<string, PreValue> newPrevalues)
         {
@@ -60,7 +60,7 @@ namespace NicBell.UCreate.Sync
             {
                 return newPrevalues;
             }
-            
+
             var oldPrevalues = Service.GetPreValuesCollectionByDataTypeId(dt.Id).PreValuesAsDictionary;
 
             foreach (var preValue in newPrevalues)
@@ -73,17 +73,6 @@ namespace NicBell.UCreate.Sync
             }
 
             return mergedPrevalues;
-        }
-
-
-        /// <summary>
-        /// Gets DataTypeDefinition by its name
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public IDataTypeDefinition GetDataType(string name)
-        {
-            return Service.GetDataTypeDefinitionByName(name);
         }
     }
 }

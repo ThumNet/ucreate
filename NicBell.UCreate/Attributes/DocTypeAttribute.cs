@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace NicBell.UCreate.Attributes
+﻿namespace NicBell.UCreate.Attributes
 {
     public class DocTypeAttribute : BaseTreeContentTypeAttribute
     {
@@ -23,11 +17,6 @@ namespace NicBell.UCreate.Attributes
         /// Default template
         /// </summary>
         public string DefaultTemplate { get; set; }
-
-        /// <summary>
-        /// The parent folder
-        /// </summary>
-        public Type Folder { get; set; }
 
         /// <summary>
         /// The path for the document type (visual in the backoffice), DocumentTypeContainers are created. 

@@ -11,10 +11,7 @@ namespace NicBell.UCreate.Sync
 {
     public class MemberTypeSync : BaseContentTypeSync<MemberTypeAttribute>
     {
-        /// <summary>
-        /// Service
-        /// </summary>
-        public IMemberTypeService Service
+        internal IMemberTypeService Service
         {
             get
             {
@@ -22,12 +19,7 @@ namespace NicBell.UCreate.Sync
             }
         }
 
-
-        /// <summary>
-        /// Saves
-        /// </summary>
-        /// <param name="itemType"></param>
-        public override void Save(Type itemType)
+        protected override void Save(Type itemType)
         {
             var memberTypes = Service.GetAll();
             var attr = itemType.GetCustomAttribute<MemberTypeAttribute>();

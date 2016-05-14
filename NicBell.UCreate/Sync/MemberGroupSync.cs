@@ -10,10 +10,7 @@ namespace NicBell.UCreate.Sync
 {
     public class MemberGroupSync : BaseTypeSync<MemberGroupAttribute>
     {
-        /// <summary>
-        /// Service
-        /// </summary>
-        public IMemberGroupService Service
+        internal IMemberGroupService Service
         {
             get
             {
@@ -21,12 +18,7 @@ namespace NicBell.UCreate.Sync
             }
         }
 
-
-        /// <summary>
-        /// Saves
-        /// </summary>
-        /// <param name="itemType"></param>
-        public override void Save(Type itemType)
+        protected override void Save(Type itemType)
         {
             var memberGroups = Service.GetAll();
             var attr = itemType.GetCustomAttribute<MemberGroupAttribute>();

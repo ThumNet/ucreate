@@ -13,14 +13,23 @@ namespace DemoSite1
         protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
             //DoStuff(applicationContext.Services);
-            DoStuff2();
+            //DoStuff2();
+            //DoStuff3();
+
+            var data = applicationContext.Services.DataTypeService.GetPreValuesCollectionByDataTypeId(1076);
+        }
+
+        private void DoStuff3()
+        {
+            var syncer = new DataTypeWithPreValuesSync();
+            syncer.SyncAll();
         }
 
         private void DoStuff2()
         {
             var path = "Document Base2/Nested Content2";
             var parents = path.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-            var parentId = new DocTypeContainerSync().CreateContainers(parents);
+            var parentId = new ContainerSync().CreateContainers(parents);
         }
 
         private void DoStuff(ServiceContext services)

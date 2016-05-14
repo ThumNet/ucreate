@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NicBell.UCreate.Converters
+﻿namespace NicBell.UCreate.Converters
 {
     public class RelatedLink
     {

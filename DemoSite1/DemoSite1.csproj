@@ -369,8 +369,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppEvents.cs" />
+    <Compile Include="Attributes\StyledTextboxDataTypeAttribute.cs" />
+    <Compile Include="DataTypes\DataTypes.cs" />
+    <Compile Include="DataTypes\TitleStyledDataType.cs" />
     <Compile Include="DocumentTypes\Compositions\Seo.cs" />
-    <Compile Include="DocumentTypes\Containers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
